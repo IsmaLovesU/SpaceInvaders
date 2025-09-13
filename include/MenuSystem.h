@@ -26,3 +26,5 @@ public:
     void showHighScores();
     void waitForKey();
 };
+
+#endif

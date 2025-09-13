@@ -60,3 +60,5 @@ public:
     void resumeGame();
     void resetGame();
 };
+
+#endif

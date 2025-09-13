@@ -1,4 +1,4 @@
-#include "C:\Users\andes\OneDrive\Escritorio\UVG\4to semestre\PrograDePlataformas\Proyecto\src\MenuSystem.h"
+#include "MenuSystem.h"
 #include <chrono>
 #include <thread>
 
@@ -119,8 +119,6 @@ int MenuSystem::showMainMenu() {
                 
             case '\n':
             case '\r':
-            case 10:
-                return selectedOption + 1;
                 
             case 27: // ESC
                 return 5; // Salir

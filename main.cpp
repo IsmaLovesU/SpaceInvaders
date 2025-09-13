@@ -11,8 +11,6 @@
 using namespace std;
 
 int main() {
-    // Inicializar ncurses
-    initscr();
     noecho();
     cbreak();
     nodelay(stdscr, TRUE);
