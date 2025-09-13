@@ -1,0 +1,79 @@
+# Space Invaders - Archivos a ignorar en Git
+
+# Archivos compilados
+*.o
+*.obj
+*.exe
+*.out
+*.app
+
+# Directorios de compilación
+obj/
+bin/space_invaders
+bin/*.exe
+build/
+dist/
+
+# Archivos del sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archivos de IDE y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.cproject
+.settings/
+*.cbp
+*.depend
+*.layout
+
+# Archivos de depuración
+*.dSYM/
+*.gdb_history
+core
+vgcore.*
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+*.bak
+*.backup
+
+# Archivos de configuración local
+config.local
+.env
+
+# Archivos de documentación generados
+*.aux
+*.log
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# Archivos de sistema Unix/Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Archivos de sistema Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
