@@ -5,7 +5,7 @@
 **Curso:** CC3086 - Programación de Microprocesadores 
 **Fecha:** 12/09/2025  
 **Fase:** 2 - Desarrollo del Entorno Gráfico  
-**Universidad:** Universidad del Valle de Guatemala
+**Universidad del Valle de Guatemala**
 
 ### 👥 Integrantes del Equipo
 - **Denil** - Arquitectura del sistema y configuración
@@ -81,7 +81,6 @@ src/
 - **g++** (versión 7.0 o superior)
 - **make**
 - **libncurses-dev** (Ubuntu/Debian) o **ncurses** (macOS)
-- **pkg-config** (recomendado)
 
 ## 🏗️ Compilación
 
@@ -124,5 +123,6 @@ make help       # Mostrar ayuda
 ---
 
 **Nota:** Esta es la implementación de la Fase 2. La funcionalidad completa del juego (movimiento, colisiones, lógica de juego).
+
 
 ¡Gracias por revisar nuestro proyecto! 🚀👾
