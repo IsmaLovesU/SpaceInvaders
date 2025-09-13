@@ -2,14 +2,14 @@
 
 ## 📋 Información del Proyecto
 
-**Curso:** CC3086 - Programación de Sistemas  
+**Curso:** CC3086 - Programación de Microprocesadores 
 **Fecha:** 12/09/2025  
 **Fase:** 2 - Desarrollo del Entorno Gráfico  
 **Universidad:** Universidad del Valle de Guatemala
 
 ### 👥 Integrantes del Equipo
 - **Denil** - Arquitectura del sistema y configuración
-- **Isma** - Interfaz gráfica ASCII y representación visual
+- **Andrés** - Interfaz gráfica ASCII y representación visual
 - **Fátima** - Documentación, testing y validación
 - **Samuel** - Investigación técnica e implementación de librerías
 
@@ -83,60 +83,13 @@ src/
 - **libncurses-dev** (Ubuntu/Debian) o **ncurses** (macOS)
 - **pkg-config** (recomendado)
 
-## ⚙️ Instalación y Compilación
-
-### 🔧 Instalación de Dependencias
-
-#### Ubuntu/Debian:
-```bash
-sudo apt-get update
-sudo apt-get install build-essential libncurses5-dev libncursesw5-dev pkg-config
-```
-
-#### macOS (con Homebrew):
-```bash
-brew install ncurses pkg-config
-```
-
-#### Fedora/CentOS:
-```bash
-sudo dnf install gcc-c++ make ncurses-devel pkgconfig
-```
-
-### 🏗️ Compilación
+## 🏗️ Compilación
 
 #### Método 1: Usando Makefile (Recomendado)
 ```bash
-# Clonar/descargar el proyecto
-git clone [URL_DEL_REPOSITORIO]
-cd space-invaders-fase2
-
-# Verificar dependencias
-make check-deps
-
-# Compilar
-make
 
 # Ejecutar
 make run
-```
-
-#### Método 2: Compilación Manual
-```bash
-# Crear directorios
-mkdir -p obj/src bin
-
-# Compilar archivos objeto
-g++ -std=c++17 -Wall -Wextra -g -Iinclude -c main.cpp -o obj/main.o
-g++ -std=c++17 -Wall -Wextra -g -Iinclude -c src/MenuSystem.cpp -o obj/src/MenuSystem.o
-g++ -std=c++17 -Wall -Wextra -g -Iinclude -c src/GameEngine.cpp -o obj/src/GameEngine.o
-g++ -std=c++17 -Wall -Wextra -g -Iinclude -c src/GameRenderer.cpp -o obj/src/GameRenderer.o
-
-# Enlazar ejecutable
-g++ obj/main.o obj/src/MenuSystem.o obj/src/GameEngine.o obj/src/GameRenderer.o -o bin/space_invaders -lncurses -lpthread
-
-# Ejecutar
-./bin/space_invaders
 ```
 
 ### 🎯 Comandos Makefile Disponibles
@@ -152,11 +105,6 @@ make help       # Mostrar ayuda
 ```
 
 ## 🎮 Cómo Usar
-
-### 🚀 Ejecución
-```bash
-./bin/space_invaders
-```
 
 ### ⌨️ Controles
 
