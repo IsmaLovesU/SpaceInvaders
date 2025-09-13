@@ -1,7 +1,5 @@
 # Space Invaders - Fase 2: Entorno Gráfico
 
-## 📋 Información del Proyecto
-
 **Curso:** CC3086 - Programación de Microprocesadores 
 **Fecha:** 12/09/2025  
 **Fase:** 2 - Desarrollo del Entorno Gráfico  
@@ -126,3 +124,4 @@ make help       # Mostrar ayuda
 
 
 ¡Gracias por revisar nuestro proyecto! 🚀👾
+
