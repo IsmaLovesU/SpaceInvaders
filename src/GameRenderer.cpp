@@ -140,13 +140,13 @@ void GameRenderer::renderStartScreen() {
     
     // Título ASCII art simplificado
     std::vector<std::string> title = {
-        "╔══════════════════════════════════════╗",
-        "║           SPACE INVADERS             ║",
-        "║                                      ║",
-        "║    Preparándose para la batalla...   ║",
-        "║                                      ║",
-        "╚══════════════════════════════════════╝"
-    };
+    "+======================================+",
+    "|           SPACE INVADERS             |",
+    "|                                      |",
+    "|    Preparandose para la batalla...   |",
+    "|                                      |",
+    "+======================================+"
+};
     
     int startY = screenHeight / 2 - 3;
     int startX = (screenWidth - title[0].length()) / 2;

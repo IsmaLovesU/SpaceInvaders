@@ -72,7 +72,7 @@ void MenuSystem::drawOptions(const std::vector<std::string>& options, int select
 }
 
 void MenuSystem::drawFooter() {
-    std::string controls = "Usar W/S o ↑/↓ para navegar, ENTER para seleccionar";
+    std::string controls = "Usar W/S o flechas para navegar, ENTER para seleccionar";
     centerText(screenHeight - 3, controls, 4);
 }
 
@@ -119,6 +119,7 @@ int MenuSystem::showMainMenu() {
                 
             case '\n':
             case '\r':
+                return selectedOption + 1;
                 
             case 27: // ESC
                 return 5; // Salir
@@ -138,41 +139,41 @@ void MenuSystem::showInstructions() {
     drawBorder();
     
     std::vector<std::string> instructions = {
-        "═══════════════════════════════════════════════════════════════",
-        "                        INSTRUCCIONES DE SPACE INVADERS",
-        "═══════════════════════════════════════════════════════════════",
-        "",
-        "OBJETIVO:",
-        "  • Destruir todos los invasores espaciales antes de que lleguen al suelo",
-        "  • Evitar ser alcanzado por los proyectiles enemigos",
-        "  • Proteger la Tierra de la invasión alienígena",
-        "",
-        "CONTROLES:",
-        "  • A o ← : Mover nave hacia la izquierda",
-        "  • D o → : Mover nave hacia la derecha", 
-        "  • W o ESPACIO : Disparar proyectil",
-        "  • P : Pausar/reanudar juego",
-        "  • Q o ESC : Salir del juego",
-        "  • R : Reiniciar partida (al terminar)",
-        "",
-        "ELEMENTOS DEL JUEGO:",
-        "  • Nave del jugador: [*] o ◄►",
-        "  • Invasores: ▲ o @ o W",
-        "  • Proyectiles del jugador: | o ^",
-        "  • Proyectiles enemigos: | o v",
-        "",
-        "PUNTUACIÓN:",
-        "  • Cada invasor destruido: +10 puntos",
-        "  • Bonificación por oleada completada",
-        "",
-        "MODALIDADES:",
-        "  • Modo 1: 40 invasores en grupos de 8",
-        "  • Modo 2: 50 invasores en grupos de 10",
-        "",
-        "¡Buena suerte, comandante!",
-        "",
-        "Presiona cualquier tecla para regresar al menú principal..."
-    };
+    "===============================================================",
+    "                    INSTRUCCIONES DE SPACE INVADERS",
+    "===============================================================",
+    "",
+    "OBJETIVO:",
+    "  * Destruir todos los invasores espaciales antes de que lleguen al suelo",
+    "  * Evitar ser alcanzado por los proyectiles enemigos",
+    "  * Proteger la Tierra de la invasion alienigena",
+    "",
+    "CONTROLES:",
+    "  * A o <- : Mover nave hacia la izquierda",
+    "  * D o -> : Mover nave hacia la derecha", 
+    "  * W o ESPACIO : Disparar proyectil",
+    "  * P : Pausar/reanudar juego",
+    "  * Q o ESC : Salir del juego",
+    "  * R : Reiniciar partida (al terminar)",
+    "",
+    "ELEMENTOS DEL JUEGO:",
+    "  * Nave del jugador: [*] o <->",
+    "  * Invasores: ^ o @ o W",
+    "  * Proyectiles del jugador: | o ^",
+    "  * Proyectiles enemigos: | o v",
+    "",
+    "PUNTUACION:",
+    "  * Cada invasor destruido: +10 puntos",
+    "  * Bonificacion por oleada completada",
+    "",
+    "MODALIDADES:",
+    "  * Modo 1: 40 invasores en grupos de 8",
+    "  * Modo 2: 50 invasores en grupos de 10",
+    "",
+    "Buena suerte, comandante!",
+    "",
+    "Presiona cualquier tecla para regresar al menu principal..."
+};
     
     int startY = 2;
     for (int i = 0; i < instructions.size(); i++) {
@@ -202,30 +203,30 @@ void MenuSystem::showHighScores() {
     drawBorder();
     
     std::vector<std::string> scores = {
-        "═══════════════════════════════════════════════════════════════",
-        "                        PUNTAJES DESTACADOS",
-        "═══════════════════════════════════════════════════════════════",
-        "",
-        "┌─────────────────────────────────────────────────────────────┐",
-        "│  RANK  │    JUGADOR    │   PUNTOS   │    MODO    │   FECHA   │",
-        "├─────────────────────────────────────────────────────────────┤",
-        "│   1°   │   CHAMPION    │   99999    │   MODO 2   │ 12/09/25  │",
-        "│   2°   │   ACE_PILOT   │   85420    │   MODO 2   │ 11/09/25  │",
-        "│   3°   │   DEFENDER    │   76850    │   MODO 1   │ 10/09/25  │",
-        "│   4°   │   ROOKIE_01   │   65230    │   MODO 1   │ 09/09/25  │",
-        "│   5°   │   SPACE_WAR   │   54170    │   MODO 2   │ 08/09/25  │",
-        "│   6°   │   GUARDIAN    │   48960    │   MODO 1   │ 07/09/25  │",
-        "│   7°   │   NOVA_STAR   │   42340    │   MODO 1   │ 06/09/25  │",
-        "│   8°   │   COSMIC_01   │   38720    │   MODO 2   │ 05/09/25  │",
-        "│   9°   │   BLASTER     │   35140    │   MODO 1   │ 04/09/25  │",
-        "│  10°   │   NEWBIE_X    │   28560    │   MODO 1   │ 03/09/25  │",
-        "└─────────────────────────────────────────────────────────────┘",
-        "",
-        "* Los puntajes se mantienen durante la sesión actual",
-        "* Para aparecer en esta tabla, debes superar al menos 25,000 puntos",
-        "",
-        "Presiona cualquier tecla para regresar al menú principal..."
-    };
+    "===============================================================",
+    "                        PUNTAJES DESTACADOS",
+    "===============================================================",
+    "",
+    "+-------------------------------------------------------------+",
+    "|  RANK  |    JUGADOR    |   PUNTOS   |    MODO    |   FECHA   |",
+    "+-------------------------------------------------------------+",
+    "|   1°   |   CHAMPION    |   99999    |   MODO 2   | 12/09/25  |",
+    "|   2°   |   ACE_PILOT   |   85420    |   MODO 2   | 11/09/25  |",
+    "|   3°   |   DEFENDER    |   76850    |   MODO 1   | 10/09/25  |",
+    "|   4°   |   ROOKIE_01   |   65230    |   MODO 1   | 09/09/25  |",
+    "|   5°   |   SPACE_WAR   |   54170    |   MODO 2   | 08/09/25  |",
+    "|   6°   |   GUARDIAN    |   48960    |   MODO 1   | 07/09/25  |",
+    "|   7°   |   NOVA_STAR   |   42340    |   MODO 1   | 06/09/25  |",
+    "|   8°   |   COSMIC_01   |   38720    |   MODO 2   | 05/09/25  |",
+    "|   9°   |   BLASTER     |   35140    |   MODO 1   | 04/09/25  |",
+    "|  10°   |   NEWBIE_X    |   28560    |   MODO 1   | 03/09/25  |",
+    "+-------------------------------------------------------------+",
+    "",
+    "* Los puntajes se mantienen durante la sesion actual",
+    "* Para aparecer en esta tabla, debes superar al menos 25,000 puntos",
+    "",
+    "Presiona cualquier tecla para regresar al menu principal..."
+};
     
     int startY = 2;
     for (int i = 0; i < scores.size(); i++) {

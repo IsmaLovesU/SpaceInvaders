@@ -247,11 +247,9 @@ void GameEngine::showPauseScreen() {
     int centerX = screenWidth / 2;
     
     std::vector<std::string> pauseText = {
-        "██████   █████  ██    ██ ███████  █████  ",
-        "██   ██ ██   ██ ██    ██ ██      ██   ██ ",
-        "██████  ███████ ██    ██ ███████ ███████ ",
-        "██      ██   ██ ██    ██      ██ ██   ██ ",
-        "██      ██   ██  ██████  ███████ ██   ██ ",
+        "====================================",
+        "               PAUSA",
+        "====================================",
         "",
         "Presiona P para continuar",
         "Presiona Q para salir"
@@ -269,16 +267,14 @@ void GameEngine::showGameOverScreen() {
     int centerX = screenWidth / 2;
     
     std::vector<std::string> gameOverText = {
-        "██████   █████  ███    ███ ███████      ██████  ██    ██ ███████ ██████  ",
-        "██       ██   ██ ████  ████ ██          ██    ██ ██    ██ ██      ██   ██ ",
-        "██   ███ ███████ ██ ████ ██ █████       ██    ██ ██    ██ █████   ██████  ",
-        "██    ██ ██   ██ ██  ██  ██ ██          ██    ██  ██  ██  ██      ██   ██ ",
-        " ██████  ██   ██ ██      ██ ███████      ██████    ████   ███████ ██   ██ ",
+        "====================================",
+        "            GAME OVER",
+        "====================================",
         "",
-        "Puntuación final: " + std::to_string(player.score),
+        "Puntuacion final: " + std::to_string(player.score),
         "",
         "Presiona R para reiniciar",
-        "Presiona Q para salir al menú"
+        "Presiona Q para salir al menu"
     };
     
     attron(COLOR_PAIR(2) | A_BOLD);
@@ -293,17 +289,15 @@ void GameEngine::showVictoryScreen() {
     int centerX = screenWidth / 2;
     
     std::vector<std::string> victoryText = {
-        "██    ██ ██  ██████ ████████  ██████  ██████  ██  █████  ",
-        "██    ██ ██ ██         ██    ██    ██ ██   ██ ██ ██   ██ ",
-        "██    ██ ██ ██         ██    ██    ██ ██████  ██ ███████ ",
-        " ██  ██  ██ ██         ██    ██    ██ ██   ██ ██ ██   ██ ",
-        "  ████   ██  ██████    ██     ██████  ██   ██ ██ ██   ██ ",
+        "====================================",
+        "             VICTORIA!",
+        "====================================",
         "",
-        "¡Has salvado la Tierra!",
-        "Puntuación final: " + std::to_string(player.score),
+        "Has salvado la Tierra!",
+        "Puntuacion final: " + std::to_string(player.score),
         "",
         "Presiona R para jugar de nuevo",
-        "Presiona Q para salir al menú"
+        "Presiona Q para salir al menu"
     };
     
     attron(COLOR_PAIR(1) | A_BOLD);

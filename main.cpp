@@ -11,6 +11,7 @@
 using namespace std;
 
 int main() {
+    initscr();
     noecho();
     cbreak();
     nodelay(stdscr, TRUE);
