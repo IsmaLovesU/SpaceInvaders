@@ -6,6 +6,9 @@
 #include <string>
 #include "GameRenderer.h"
 
+// Forward declaration para evitar dependencia circular
+class ThreadManager;
+
 // Estructura para representar entidades del juego
 struct Entity {
     int x, y;
@@ -31,6 +34,8 @@ struct Player {
 class GameEngine {
 private:
     GameRenderer* renderer;
+    ThreadManager* threadManager;
+    
     Player player;
     std::vector<Entity> invaders;
     std::vector<Entity> playerBullets;
@@ -40,13 +45,10 @@ private:
     int screenWidth, screenHeight;
     int gameState; // 0: jugando, 1: pausa, 2: game over, 3: victoria
     bool running;
+    bool playerShouldShoot;
     
     void initializeGame();
     void setupInvaders();
-    void handleInput();
-    void updateGame();
-    void checkCollisions();
-    void renderGame();
     void showGameOverScreen();
     void showVictoryScreen();
     void showPauseScreen();
@@ -59,6 +61,26 @@ public:
     void pauseGame();
     void resumeGame();
     void resetGame();
+    void render();
+    
+    // Getters para los hilos
+    Player* getPlayer() { return &player; }
+    std::vector<Entity>* getInvaders() { return &invaders; }
+    std::vector<Entity>* getPlayerBullets() { return &playerBullets; }
+    std::vector<Entity>* getInvaderBullets() { return &invaderBullets; }
+    ThreadManager* getThreadManager() { return threadManager; }
+    
+    int getGameState() const { return gameState; }
+    void setGameState(int state) { gameState = state; }
+    
+    int getScreenWidth() const { return screenWidth; }
+    int getScreenHeight() const { return screenHeight; }
+    
+    bool isRunning() const { return running; }
+    void setRunning(bool r) { running = r; }
+    
+    bool shouldPlayerShoot() const { return playerShouldShoot; }
+    void setPlayerShoot(bool shoot) { playerShouldShoot = shoot; }
 };
 
 #endif
