@@ -95,14 +95,11 @@ void* ThreadManager::playerMovementFunc(void* arg) {
     ThreadData* data = static_cast<ThreadData*>(arg);
     
     while (*(data->running)) {
-        // Esperar por el semáforo de acción del jugador
         sem_wait(data->engine->getThreadManager()->getPlayerActionSem());
         
         pthread_mutex_lock(data->engine->getThreadManager()->getEntityMutex());
         
-        if (data->engine->getGameState() == 0) { // Solo si está jugando
-            // El movimiento real se maneja por input
-            // Este hilo valida límites y actualiza posición
+        if (data->engine->getGameState() == 0) {
             Player* player = data->engine->getPlayer();
             if (player->entity.x < 1) player->entity.x = 1;
             if (player->entity.x >= data->engine->getScreenWidth() - 2) {
@@ -114,7 +111,6 @@ void* ThreadManager::playerMovementFunc(void* arg) {
         
         sem_post(data->engine->getThreadManager()->getPlayerActionSem());
         
-        // Esperar en la barrera
         pthread_barrier_wait(&data->engine->getThreadManager()->updateBarrier);
         
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -165,7 +161,7 @@ void* ThreadManager::invaderMovementFunc(void* arg) {
         if (data->engine->getGameState() == 0) {
             moveCounter++;
             
-            if (moveCounter >= 30) { // Mover cada 30 frames
+            if (moveCounter >= 30) {
                 moveCounter = 0;
                 std::vector<Entity>* invaders = data->engine->getInvaders();
                 
@@ -215,14 +211,13 @@ void* ThreadManager::invaderShootingFunc(void* arg) {
         if (data->engine->getGameState() == 0) {
             shootTimer++;
             
-            if (shootTimer >= 60) { // Disparar cada ~2 segundos
+            if (shootTimer >= 60) {
                 shootTimer = 0;
                 
                 std::vector<Entity>* invaders = data->engine->getInvaders();
                 std::vector<Entity>* bullets = data->engine->getInvaderBullets();
                 
                 if (!invaders->empty()) {
-                    // Seleccionar un invasor aleatorio activo
                     std::vector<int> activeIndices;
                     for (size_t i = 0; i < invaders->size(); i++) {
                         if ((*invaders)[i].active) {
@@ -258,7 +253,6 @@ void* ThreadManager::bulletUpdateFunc(void* arg) {
         pthread_mutex_lock(data->engine->getThreadManager()->getEntityMutex());
         
         if (data->engine->getGameState() == 0) {
-            // Actualizar proyectiles del jugador
             std::vector<Entity>* playerBullets = data->engine->getPlayerBullets();
             for (auto it = playerBullets->begin(); it != playerBullets->end();) {
                 it->y--;
@@ -269,7 +263,6 @@ void* ThreadManager::bulletUpdateFunc(void* arg) {
                 }
             }
             
-            // Actualizar proyectiles de invasores
             std::vector<Entity>* invaderBullets = data->engine->getInvaderBullets();
             for (auto it = invaderBullets->begin(); it != invaderBullets->end();) {
                 it->y++;
@@ -305,7 +298,6 @@ void* ThreadManager::collisionDetectionFunc(void* arg) {
             std::vector<Entity>* invaders = data->engine->getInvaders();
             Player* player = data->engine->getPlayer();
             
-            // Colisiones proyectiles jugador vs invasores
             for (auto& bullet : *playerBullets) {
                 for (auto& invader : *invaders) {
                     if (bullet.active && invader.active &&
@@ -317,7 +309,6 @@ void* ThreadManager::collisionDetectionFunc(void* arg) {
                 }
             }
             
-            // Colisiones proyectiles invasores vs jugador
             for (auto& bullet : *invaderBullets) {
                 if (bullet.active && player->entity.active &&
                     bullet.x == player->entity.x && bullet.y == player->entity.y) {
@@ -326,7 +317,6 @@ void* ThreadManager::collisionDetectionFunc(void* arg) {
                 }
             }
             
-            // Limpiar proyectiles inactivos
             playerBullets->erase(
                 std::remove_if(playerBullets->begin(), playerBullets->end(),
                               [](const Entity& e) { return !e.active; }),
@@ -362,104 +352,101 @@ void* ThreadManager::renderFunc(void* arg) {
         
         pthread_barrier_wait(&data->engine->getThreadManager()->updateBarrier);
         
-        std::this_thread::sleep_for(std::chrono::milliseconds(33)); // ~30 FPS
+        std::this_thread::sleep_for(std::chrono::milliseconds(33));
     }
     
     return nullptr;
 }
 
-// HILO 8: Manejo de entrada
+// HILO 8: Manejo de entrada - ARREGLADO
 void* ThreadManager::inputHandlerFunc(void* arg) {
     ThreadData* data = static_cast<ThreadData*>(arg);
     
     while (*(data->running)) {
         int ch = getch();
         
-        int currentState = data->engine->getGameState();
-        
-        // Si estamos en Game Over o Victoria, manejar de forma especial
-        if (currentState == 2 || currentState == 3) {
-            if (ch != ERR) {
-                if (ch == 'r' || ch == 'R') {
-                    // Reiniciar el juego
-                    pthread_mutex_lock(data->engine->getThreadManager()->getEntityMutex());
-                    pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
-                    
-                    data->engine->resetGame();
-                    
-                    pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
-                    pthread_mutex_unlock(data->engine->getThreadManager()->getEntityMutex());
-                } 
-                else if (ch == 'q' || ch == 'Q' || ch == 27) {
-                    // Salir del juego
-                    data->engine->setRunning(false);
-                    *(data->running) = false;
-                }
-            }
-        }
-        // Si estamos jugando o en pausa, manejar normalmente
-        else {
-            if (ch != ERR) {
+        if (ch != ERR) {
+            int currentState = data->engine->getGameState();
+            
+            // Manejar input según estado
+            if (currentState == 0) { // Jugando
                 pthread_mutex_lock(data->engine->getThreadManager()->getEntityMutex());
                 
-                if (currentState == 0) { // Jugando
-                    switch (ch) {
-                        case 'a':
-                        case 'A':
-                        case KEY_LEFT:
-                            if (data->engine->getPlayer()->entity.x > 1) {
-                                data->engine->getPlayer()->entity.x--;
-                            }
-                            break;
-                            
-                        case 'd':
-                        case 'D':
-                        case KEY_RIGHT:
-                            if (data->engine->getPlayer()->entity.x < data->engine->getScreenWidth() - 2) {
-                                data->engine->getPlayer()->entity.x++;
-                            }
-                            break;
-                            
-                        case 'w':
-                        case 'W':
-                        case ' ':
-                            data->engine->setPlayerShoot(true);
-                            break;
-                            
-                        case 'p':
-                        case 'P':
-                            pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
-                            data->engine->setGameState(1);
-                            pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
-                            break;
-                            
-                        case 'q':
-                        case 'Q':
-                        case 27: // ESC
-                            data->engine->setRunning(false);
-                            *(data->running) = false;
-                            break;
-                    }
-                } 
-                else if (currentState == 1) { // Pausa
-                    switch (ch) {
-                        case 'p':
-                        case 'P':
-                            pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
-                            data->engine->setGameState(0);
-                            pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
-                            break;
-                            
-                        case 'q':
-                        case 'Q':
-                        case 27: // ESC
-                            data->engine->setRunning(false);
-                            *(data->running) = false;
-                            break;
-                    }
+                switch (ch) {
+                    case 'a':
+                    case 'A':
+                    case KEY_LEFT:
+                        if (data->engine->getPlayer()->entity.x > 1) {
+                            data->engine->getPlayer()->entity.x--;
+                        }
+                        break;
+                        
+                    case 'd':
+                    case 'D':
+                    case KEY_RIGHT:
+                        if (data->engine->getPlayer()->entity.x < data->engine->getScreenWidth() - 2) {
+                            data->engine->getPlayer()->entity.x++;
+                        }
+                        break;
+                        
+                    case 'w':
+                    case 'W':
+                    case ' ':
+                        data->engine->setPlayerShoot(true);
+                        break;
+                        
+                    case 'p':
+                    case 'P':
+                        pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
+                        data->engine->setGameState(1);
+                        pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
+                        break;
+                        
+                    case 'q':
+                    case 'Q':
+                    case 27: // ESC
+                        data->engine->setRunning(false);
+                        break;
                 }
                 
                 pthread_mutex_unlock(data->engine->getThreadManager()->getEntityMutex());
+                
+            } else if (currentState == 1) { // Pausa
+                switch (ch) {
+                    case 'p':
+                    case 'P':
+                        pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
+                        data->engine->setGameState(0);
+                        pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
+                        break;
+                        
+                    case 'q':
+                    case 'Q':
+                    case 27: // ESC
+                        data->engine->setRunning(false);
+                        break;
+                }
+                
+            } else if (currentState == 2 || currentState == 3) { // Game Over o Victoria
+                switch (ch) {
+                    case 'r':
+                    case 'R':
+                        // Reiniciar protegido con mutexes
+                        pthread_mutex_lock(data->engine->getThreadManager()->getEntityMutex());
+                        pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
+                        
+                        data->engine->resetGame();
+                        
+                        pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
+                        pthread_mutex_unlock(data->engine->getThreadManager()->getEntityMutex());
+                        break;
+                        
+                    case 'q':
+                    case 'Q':
+                    case 27: // ESC
+                        data->engine->setRunning(false);
+                        break;
+                }
             }
         }
         
@@ -471,7 +458,7 @@ void* ThreadManager::inputHandlerFunc(void* arg) {
     return nullptr;
 }
 
-// HILO 9: Actualización de puntaje y estadísticas
+// HILO 9: Actualización de puntaje
 void* ThreadManager::scoreUpdateFunc(void* arg) {
     ThreadData* data = static_cast<ThreadData*>(arg);
     
@@ -479,8 +466,7 @@ void* ThreadManager::scoreUpdateFunc(void* arg) {
         pthread_mutex_lock(data->engine->getThreadManager()->getScoreMutex());
         
         if (data->engine->getGameState() == 0) {
-            // Aquí podrían agregarse bonificaciones por tiempo, combos, etc.
-            // Por ahora solo verificamos el puntaje
+            // Aquí podrían agregarse bonificaciones
         }
         
         pthread_mutex_unlock(data->engine->getThreadManager()->getScoreMutex());
@@ -493,7 +479,7 @@ void* ThreadManager::scoreUpdateFunc(void* arg) {
     return nullptr;
 }
 
-// HILO 10: Gestión del estado del juego
+// HILO 10: Gestión del estado
 void* ThreadManager::gameStateFunc(void* arg) {
     ThreadData* data = static_cast<ThreadData*>(arg);
     
@@ -504,12 +490,10 @@ void* ThreadManager::gameStateFunc(void* arg) {
         if (data->engine->getGameState() == 0) {
             Player* player = data->engine->getPlayer();
             
-            // Verificar Game Over
             if (player->lives <= 0) {
                 data->engine->setGameState(2);
             }
             
-            // Verificar Victoria
             std::vector<Entity>* invaders = data->engine->getInvaders();
             bool allDestroyed = true;
             for (const auto& invader : *invaders) {
@@ -523,10 +507,9 @@ void* ThreadManager::gameStateFunc(void* arg) {
                 data->engine->setGameState(3);
             }
             
-            // Verificar si los invasores llegaron al fondo
             for (const auto& invader : *invaders) {
                 if (invader.active && invader.y >= data->engine->getScreenHeight() - 6) {
-                    data->engine->setGameState(2); // Game Over
+                    data->engine->setGameState(2);
                     break;
                 }
             }
