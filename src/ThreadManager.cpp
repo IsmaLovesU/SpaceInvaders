@@ -375,82 +375,92 @@ void* ThreadManager::inputHandlerFunc(void* arg) {
     while (*(data->running)) {
         int ch = getch();
         
-        if (ch != ERR) { // Solo procesar si hay una tecla presionada
-            pthread_mutex_lock(data->engine->getThreadManager()->getEntityMutex());
-            
-            int currentState = data->engine->getGameState();
-            
-            // Manejar input según el estado del juego
-            if (currentState == 0) { // Jugando
-                switch (ch) {
-                    case 'a':
-                    case 'A':
-                    case KEY_LEFT:
-                        if (data->engine->getPlayer()->entity.x > 1) {
-                            data->engine->getPlayer()->entity.x--;
-                        }
-                        break;
-                        
-                    case 'd':
-                    case 'D':
-                    case KEY_RIGHT:
-                        if (data->engine->getPlayer()->entity.x < data->engine->getScreenWidth() - 2) {
-                            data->engine->getPlayer()->entity.x++;
-                        }
-                        break;
-                        
-                    case 'w':
-                    case 'W':
-                    case ' ':
-                        data->engine->setPlayerShoot(true);
-                        break;
-                        
-                    case 'p':
-                    case 'P':
-                        pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
-                        data->engine->setGameState(1);
-                        pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
-                        break;
-                        
-                    case 'q':
-                    case 'Q':
-                    case 27: // ESC
-                        data->engine->setRunning(false);
-                        break;
-                }
-            } 
-            else if (currentState == 1) { // Pausa
-                switch (ch) {
-                    case 'p':
-                    case 'P':
-                        pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
-                        data->engine->setGameState(0);
-                        pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
-                        break;
-                        
-                    case 'q':
-                    case 'Q':
-                    case 27: // ESC
-                        data->engine->setRunning(false);
-                        break;
+        int currentState = data->engine->getGameState();
+        
+        // Si estamos en Game Over o Victoria, manejar de forma especial
+        if (currentState == 2 || currentState == 3) {
+            if (ch != ERR) {
+                if (ch == 'r' || ch == 'R') {
+                    // Reiniciar el juego
+                    pthread_mutex_lock(data->engine->getThreadManager()->getEntityMutex());
+                    pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
+                    
+                    data->engine->resetGame();
+                    
+                    pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
+                    pthread_mutex_unlock(data->engine->getThreadManager()->getEntityMutex());
+                } 
+                else if (ch == 'q' || ch == 'Q' || ch == 27) {
+                    // Salir del juego
+                    data->engine->setRunning(false);
+                    *(data->running) = false;
                 }
             }
-            else if (currentState == 2 || currentState == 3) { // Game Over o Victoria
-                switch (ch) {
-                    case 'r':
-                    case 'R':
-                        data->engine->resetGame();
-                        break;
-                        
-                    case 'q':
-                    case 'Q':
-                    case 27: // ESC
-                        data->engine->setRunning(false);
-                        break;
+        }
+        // Si estamos jugando o en pausa, manejar normalmente
+        else {
+            if (ch != ERR) {
+                pthread_mutex_lock(data->engine->getThreadManager()->getEntityMutex());
+                
+                if (currentState == 0) { // Jugando
+                    switch (ch) {
+                        case 'a':
+                        case 'A':
+                        case KEY_LEFT:
+                            if (data->engine->getPlayer()->entity.x > 1) {
+                                data->engine->getPlayer()->entity.x--;
+                            }
+                            break;
+                            
+                        case 'd':
+                        case 'D':
+                        case KEY_RIGHT:
+                            if (data->engine->getPlayer()->entity.x < data->engine->getScreenWidth() - 2) {
+                                data->engine->getPlayer()->entity.x++;
+                            }
+                            break;
+                            
+                        case 'w':
+                        case 'W':
+                        case ' ':
+                            data->engine->setPlayerShoot(true);
+                            break;
+                            
+                        case 'p':
+                        case 'P':
+                            pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
+                            data->engine->setGameState(1);
+                            pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
+                            break;
+                            
+                        case 'q':
+                        case 'Q':
+                        case 27: // ESC
+                            data->engine->setRunning(false);
+                            *(data->running) = false;
+                            break;
+                    }
+                } 
+                else if (currentState == 1) { // Pausa
+                    switch (ch) {
+                        case 'p':
+                        case 'P':
+                            pthread_mutex_lock(data->engine->getThreadManager()->getGameStateMutex());
+                            data->engine->setGameState(0);
+                            pthread_mutex_unlock(data->engine->getThreadManager()->getGameStateMutex());
+                            break;
+                            
+                        case 'q':
+                        case 'Q':
+                        case 27: // ESC
+                            data->engine->setRunning(false);
+                            *(data->running) = false;
+                            break;
+                    }
                 }
+                
+                pthread_mutex_unlock(data->engine->getThreadManager()->getEntityMutex());
             }
-            
-            pthread_mutex_unlock(data->engine->getThreadManager()->getEntityMutex());
         }
         
         pthread_barrier_wait(&data->engine->getThreadManager()->updateBarrier);

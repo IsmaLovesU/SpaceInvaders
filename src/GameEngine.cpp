@@ -180,10 +180,6 @@ void GameEngine::resumeGame() {
 }
 
 void GameEngine::resetGame() {
-    // Solo reinicializar el estado del juego sin detener hilos
-    pthread_mutex_lock(threadManager->getEntityMutex());
-    pthread_mutex_lock(threadManager->getGameStateMutex());
-    
     // Reinicializar jugador
     player.lives = 3;
     player.score = 0;
@@ -202,7 +198,4 @@ void GameEngine::resetGame() {
     
     // Cambiar estado a jugando
     gameState = 0;
-    
-    pthread_mutex_unlock(threadManager->getGameStateMutex());
-    pthread_mutex_unlock(threadManager->getEntityMutex());
 }
